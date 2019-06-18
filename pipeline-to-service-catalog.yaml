@@ -5,24 +5,22 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: pipeline to service catalog
 Parameters:
-  # RepositoryName:
-  #   Description: >
-  #     Name of the AWS CodeCommit that you wish to create, where you can push the code related to Service Catalog
-  #   Type: String
-
   GithubRepositoryName:
-    Description: Name of the AWS Github repo  where you can push the code related to Service Catalog
+    Description: >
+      Name of the AWS Github repo  where you can push the code related to Service Catalog
     Type: String
-  GithubToken:
-    Description: Token of the github repo.
+    Default: pipeline-to-service-catalog
+  GithubPersonalToken:
+    Description: >
+      Personal token of the Github account
     Type: String
 Resources:
-  SCPipelineWebhook:
+  AppPipelineWebhook:
     Type: AWS::CodePipeline::Webhook
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: !Ref GithubToken
+        SecretToken: !Ref GithubPersonalToken
       Filters:
         - JsonPath: "$.ref"
           MatchEquals: refs/heads/{Branch}
@@ -120,8 +118,8 @@ Resources:
   BuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: !Ref AWS::StackName
-      Description: !Sub ${AWS::StackName}-buildproject
+      Name: !Sub ${AWS::StackName}-buildproject
+      Description: service catalog codebuild project.
       ServiceRole: !GetAtt BuildProjectRole.Arn
       Artifacts:
         Type: CODEPIPELINE
@@ -135,13 +133,13 @@ Resources:
       Source:
         Type: CODEPIPELINE
         BuildSpec: |
-          version: 0.2
+          version: 0.1
           phases:
             install:
               commands:
                 - printenv
                 - ls -R
-                - pip install -r scripts/requirements.txt -t "$PWD"
+                - cd scripts && pip install -r requirements.txt -t "$PWD"
             build:
               commands:
                 - cp lambda-cloudformation.yaml scripts/lambda-cloudformation.yaml
@@ -227,7 +225,7 @@ Resources:
                 Owner: jing-1strategy
                 Repo: !Ref GithubRepositoryName
                 Branch: master
-                OAuthToken: !Ref GithubToken
+                OAuthToken: !Ref GithubPersonalToken
                 PollForSourceChanges: false
               RunOrder: 1
         - Name: Build
@@ -256,7 +254,7 @@ Resources:
               Configuration:
                 ChangeSetName: Deploy
                 ActionMode: CREATE_UPDATE
-                StackName: !Sub service-catalog-sync-lambda
+                StackName: !Sub stack-service-catalog-github-sync-lambda
                 Capabilities: CAPABILITY_NAMED_IAM
                 TemplatePath: BuildOutput::samtemplate.yaml
                 RoleArn: !GetAtt CFDeployerRole.Arn
@@ -272,7 +270,7 @@ Resources:
                 Version: 1
                 Provider: Lambda
               Configuration:
-                FunctionName: service-catalog-sync-lambda
+                FunctionName: service-catalog-github-sync-lambda
               InputArtifacts:
                 - Name: SCCheckoutArtifact
               RunOrder: 1
