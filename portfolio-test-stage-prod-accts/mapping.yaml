@@ -11,6 +11,8 @@ products:
     owner: jing@1strategy.com
     description: Create the CodeDeploy application, deployment group, and service role used by CodeDeploy.
 accounts:
+  - identifier: shared service account
+    number: 355189840595
   - identifier: test account
     number: 281782457076
   - identifier: stage account

@@ -10,7 +10,9 @@ products:
     template: webportal-codepipeline-step4.yaml
     owner: jing@1strategy.com
     description: CodePipeline to deploy the latest Webportal code from Github to test, stage and prod environment.
-accounts: []
+accounts:
+  - identifier: shared service account
+    number: 355189840595
 
 tags:
   - Key: Name
