@@ -17,7 +17,7 @@ Parameters:
     Description: Token of the github repo.
     Type: String
 Resources:
-  AppPipelineWebhook:
+  SCPipelineWebhook:
     Type: AWS::CodePipeline::Webhook
     Properties:
       Authentication: GITHUB_HMAC
@@ -28,16 +28,10 @@ Resources:
           MatchEquals: refs/heads/{Branch}
       TargetPipeline: !Ref Pipeline
       TargetAction: SourceAction
-      Name: InfrastructurePipelineWebhook
+      Name: SCPipelineWebhook
       TargetPipelineVersion: !GetAtt Pipeline.Version
       RegisterWithThirdParty: true
 
-  # ServiceCatalogRepo:
-  #   Type: AWS::CodeCommit::Repository
-  #   DeletionPolicy: Retain
-  #   Properties:
-  #     RepositoryDescription: Holds Service Catalog code
-  #     RepositoryName: !Ref RepositoryName
   ArtifactBucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
@@ -147,7 +141,7 @@ Resources:
               commands:
                 - printenv
                 - ls -R
-                - cd scripts && pip install -r requirements.txt -t "$PWD"
+                - pip install -r scripts/requirements.txt -t "$PWD"
             build:
               commands:
                 - cp lambda-cloudformation.yaml scripts/lambda-cloudformation.yaml
@@ -219,20 +213,6 @@ Resources:
       RoleArn: !GetAtt PipeLineRole.Arn
       Name: !Ref AWS::StackName
       Stages:
-        # - Name: source-code-checkout
-        #   Actions:
-        #     - Name: App
-        #       ActionTypeId:
-        #         Category: Source
-        #         Owner: AWS
-        #         Version: 1
-        #         Provider: CodeCommit
-        #       Configuration:
-        #         RepositoryName: !GetAtt ServiceCatalogRepo.Name
-        #         BranchName: master
-        #       OutputArtifacts:
-        #         - Name: SCCheckoutArtifact
-        #       RunOrder: 1
         - Name: GithubSource
           Actions:
             - Name: SourceAction
