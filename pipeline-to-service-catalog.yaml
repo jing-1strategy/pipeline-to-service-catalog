@@ -20,7 +20,7 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: 52fe6bad680492a0637423f19abc655135b7ba98
+        SecretToken: 0ebcd675ded51bfdb1db7e515d38bc5d771e8beb
       Filters:
         - JsonPath: "$.ref"
           MatchEquals: refs/heads/{Branch}
@@ -245,7 +245,7 @@ Resources:
                 Owner: jing-1strategy
                 Repo: !Ref GithubRepositoryName
                 Branch: master
-                OAuthToken: 52fe6bad680492a0637423f19abc655135b7ba98
+                OAuthToken: 0ebcd675ded51bfdb1db7e515d38bc5d771e8beb
                 PollForSourceChanges: false
               RunOrder: 1
         - Name: Build
