@@ -11,8 +11,10 @@ Parameters:
   #   Type: String
 
   GithubRepositoryName:
-    Description: >
-      Name of the AWS Github repo  where you can push the code related to Service Catalog
+    Description: Name of the AWS Github repo  where you can push the code related to Service Catalog
+    Type: String
+  GithubToken:
+    Description: Token of the github repo.
     Type: String
 Resources:
   AppPipelineWebhook:
@@ -20,7 +22,7 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: 0ebcd675ded51bfdb1db7e515d38bc5d771e8beb
+        SecretToken: !Ref GithubToken
       Filters:
         - JsonPath: "$.ref"
           MatchEquals: refs/heads/{Branch}
@@ -245,7 +247,7 @@ Resources:
                 Owner: jing-1strategy
                 Repo: !Ref GithubRepositoryName
                 Branch: master
-                OAuthToken: 0ebcd675ded51bfdb1db7e515d38bc5d771e8beb
+                OAuthToken: !Ref GithubToken
                 PollForSourceChanges: false
               RunOrder: 1
         - Name: Build
