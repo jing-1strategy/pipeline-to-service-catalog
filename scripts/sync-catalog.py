@@ -40,7 +40,6 @@ def handler(event, context):
         sync_service_catalog(s3, artifact_data)
         put_job_success(job_id, "Success")
 
-
     except Exception as e:
         print('Function failed due to exception.')
         print(e)
@@ -58,7 +57,7 @@ def sync_service_catalog(s3, artifact):
         6. Share the portfolio with list of accounts mentioned in the mapping.yaml
         7. Give access to the principals mentioned in the mapping.yaml
         8. Tag Portfolio as mentioned in mapping.yaml
-    
+
     :param s3: S3 Boto3 client
     :param artifact: Artifact object sent by codepipeline
     :return: None
@@ -79,7 +78,8 @@ def sync_service_catalog(s3, artifact):
                 for mappingfile in os.listdir("/tmp/" + folder):
                     print('Found ' + mappingfile + ' inside folder ' + folder)
                     if str(mappingfile).endswith('mapping.yaml'):
-                        print('Working with ' + mappingfile + ' inside folder ' + folder)
+                        print('Working with ' + mappingfile +
+                              ' inside folder ' + folder)
                         with open(("/tmp/" + str(folder) + "/" + str(mappingfile)), 'r') as stream:
                             objfile = yaml.load(stream)
                         # objfile = json.loads("/tmp/"+folder+"/"+mappingfile)
@@ -89,7 +89,8 @@ def sync_service_catalog(s3, artifact):
                         obj_portfolio = {}
                         for portfolio in lst_portfolio:
                             if portfolio['DisplayName'] not in lst_portfolio_name:
-                                lst_portfolio_name.append(portfolio['DisplayName'])
+                                lst_portfolio_name.append(
+                                    portfolio['DisplayName'])
                         if objfile['name'] in lst_portfolio_name:
                             print('PORTFOLIO Match found.Checking Products now.')
                             for item in lst_portfolio:
@@ -97,9 +98,12 @@ def sync_service_catalog(s3, artifact):
                                     portfolio_id = item['Id']
                                     obj_portfolio = item
                             update_portfolio(obj_portfolio, objfile, bucket)
-                            remove_principal_with_portfolio(obj_portfolio['Id'])
-                            associate_principal_with_portfolio(obj_portfolio, objfile)
-                            lst_products = list_products_for_portfolio(portfolio_id)
+                            remove_principal_with_portfolio(
+                                obj_portfolio['Id'])
+                            associate_principal_with_portfolio(
+                                obj_portfolio, objfile)
+                            lst_products = list_products_for_portfolio(
+                                portfolio_id)
                             lst_products_name = []
                             for products in lst_products:
                                 lst_products_name.append(products['Name'])
@@ -111,29 +115,37 @@ def sync_service_catalog(s3, artifact):
                                         if ids['Name'] == productsInFile['name']:
                                             productid = ids['ProductId']
                                     s3.upload_file(
-                                        '/tmp/' + str(folder) + "/" + productsInFile['template'],
+                                        '/tmp/' + str(folder) + "/" +
+                                        productsInFile['template'],
                                         bucket, s3key)
-                                    create_provisioning_artifact(productsInFile, productid, bucket + "/" + s3key)
+                                    create_provisioning_artifact(
+                                        productsInFile, productid, bucket + "/" + s3key)
                                 else:
                                     s3key = 'sc-templates/' + productsInFile['name'] + '/templates/' + str(
                                         uuid.uuid4()) + '.yaml'
                                     s3.upload_file(
-                                        '/tmp/' + str(folder) + "/" + productsInFile['template'],
+                                        '/tmp/' + str(folder) + "/" +
+                                        productsInFile['template'],
                                         bucket,
                                         s3key)
-                                    create_product(productsInFile, portfolio_id, bucket + "/" + s3key)
+                                    create_product(
+                                        productsInFile, portfolio_id, bucket + "/" + s3key)
                         else:
                             print('NO PORTFOLIO Match found.Creating one...')
-                            create_portfolio_response = create_portfolio(objfile, bucket)
+                            create_portfolio_response = create_portfolio(
+                                objfile, bucket)
                             portfolioid = create_portfolio_response['PortfolioDetail']['Id']
-                            associate_principal_with_portfolio(create_portfolio_response['PortfolioDetail'], objfile)
+                            associate_principal_with_portfolio(
+                                create_portfolio_response['PortfolioDetail'], objfile)
                             for productsInFile in objfile['products']:
                                 s3key = 'sc-templates/' + productsInFile['name'] + '/templates/' + str(
                                     uuid.uuid4()) + '.yaml'
                                 s3.upload_file(
-                                    '/tmp/' + str(folder) + "/" + productsInFile['template'], bucket,
+                                    '/tmp/' + str(folder) + "/" +
+                                    productsInFile['template'], bucket,
                                     s3key)
-                                create_product(productsInFile, portfolioid, bucket + "/" + s3key)
+                                create_product(
+                                    productsInFile, portfolioid, bucket + "/" + s3key)
 
 
 def update_portfolio(objPortfolio, objMappingFile, bucket):
@@ -144,7 +156,7 @@ def update_portfolio(objPortfolio, objMappingFile, bucket):
         4. Modify Bucket policy to sync access with the accountnumber
         5. Share portfolio with the accounts mentioned in the mapping file object
         6. Remove portfolio access from the accounts NOT mentioned in the mapping file object
-    
+
     :param objPortfolio: Portfolio Object as retrieved from boto3 call
     :param objMappingFile: mapping.yaml file object
     :param bucket: S3 Bucket
@@ -184,7 +196,7 @@ def update_portfolio(objPortfolio, objMappingFile, bucket):
 
 def associate_principal_with_portfolio(objPortfolio, objMappingFile):
     """ Grants access to the Roles/Users as mentioned in the mappings object
-    
+
     :param objPortfolio: Portfolio Object as retrieved from boto3 call
     :param objMappingFile: mapping.yaml file object
     :return: None
@@ -198,9 +210,7 @@ def associate_principal_with_portfolio(objPortfolio, objMappingFile):
             )
 
 
-
 def remove_principal_with_portfolio(id):
-
     """ Removes access to the Roles/Users as mentioned in the mappings object
 
         :param objPortfolio: Portfolio Object as retrieved from boto3 call
@@ -245,7 +255,7 @@ def list_portfolios():
 
 def list_products_for_portfolio(id):
     """
-    
+
     :param id: portfolio id
     :return: List of products associated with the portfolio
     """
@@ -256,7 +266,8 @@ def list_products_for_portfolio(id):
 
     while not done:
         if nextmarker:
-            product_response = client.search_products_as_admin(nextmarker=nextmarker, PortfolioId=id)
+            product_response = client.search_products_as_admin(
+                nextmarker=nextmarker, PortfolioId=id)
         else:
             product_response = client.search_products_as_admin(PortfolioId=id)
 
@@ -272,7 +283,7 @@ def list_products_for_portfolio(id):
 
 def create_product(objProduct, portfolioid, s3objectkey):
     """
-    
+
     :param objProduct: Product object to be created. has all the mandatory details for product creation
     :param portfolioid: Portfolio ID with which the newly created product would be associated with
     :param s3objectkey: S3Object Key, which has the cloudformation template for the product
@@ -304,7 +315,7 @@ def create_product(objProduct, portfolioid, s3objectkey):
 
 def create_provisioning_artifact(objProduct, productid, s3objectkey):
     """
-    
+
     :param objProduct: Product object for which the provisioning artifact (version of the product) will be created. has all the mandatory details for product.
     :param productid: Product ID
     :param s3objectkey: S3Object Key, which has the cloudformation template for the product
@@ -327,7 +338,7 @@ def create_provisioning_artifact(objProduct, productid, s3objectkey):
 
 def create_portfolio(objMappingFile, bucket):
     """
-    
+
     :param objMappingFile: Object of the mapping file
     :param bucket: BucketName which holds the cloudformation templates for the products
     :return: Response of Create portfolio share API call
@@ -391,9 +402,11 @@ def list_portfolio_shares(portfolioid):
 
     while not done:
         if nextmarker:
-            lst_portfolio_access = client.list_portfolio_access(nextmarker=nextmarker, PortfolioId=portfolioid)
+            lst_portfolio_access = client.list_portfolio_access(
+                nextmarker=nextmarker, PortfolioId=portfolioid)
         else:
-            lst_portfolio_access = client.list_portfolio_access(PortfolioId=portfolioid)
+            lst_portfolio_access = client.list_portfolio_access(
+                PortfolioId=portfolioid)
 
         for accounts in lst_portfolio_access['AccountIds']:
             lst_privledged_accounts.append(accounts)
@@ -489,7 +502,8 @@ def get_accounts_to_append(statements, lstaccounts, s3bucket):
                 if statement['Resource'] == "arn:aws:s3:::" + s3bucket + "/sc-templates/*":
                     if type(statement['Principal']['AWS']) is unicode:
                         if statement['Principal']['AWS'] not in objexistingprincipals:
-                            objexistingprincipals.append(statement['Principal']['AWS'])
+                            objexistingprincipals.append(
+                                statement['Principal']['AWS'])
                     else:
                         for arn in statement['Principal']['AWS']:
                             if arn not in objexistingprincipals:
@@ -504,7 +518,8 @@ def get_accounts_to_append(statements, lstaccounts, s3bucket):
         for account in lstaccounts:
             if ("arn:aws:iam::" + str(account) + ":root") not in objexistingprincipals:
                 if "arn:aws:iam::" + str(account) + ":root" not in objPrincipals:
-                    objPrincipals.append("arn:aws:iam::" + str(account) + ":root")
+                    objPrincipals.append(
+                        "arn:aws:iam::" + str(account) + ":root")
     else:
         for account in lstaccounts:
             if "arn:aws:iam::" + str(account) + ":root" not in objPrincipals:
@@ -528,7 +543,7 @@ def put_bucket_policy(policy, s3bucket):
 
 def check_if_account_is_integer(string):
     """ Checks if the account number is an integer
-    
+
     :param string: input string
     :return: Boolean, if the input is integer
     """
@@ -577,7 +592,8 @@ def put_job_failure(job, message):
     """
     print('Putting job failure')
     print(message)
-    code_pipeline.put_job_failure_result(jobId=job, failureDetails={'message': message, 'type': 'JobFailed'})
+    code_pipeline.put_job_failure_result(jobId=job, failureDetails={
+                                         'message': message, 'type': 'JobFailed'})
 
 
 def get_user_params(job_id, job_data):

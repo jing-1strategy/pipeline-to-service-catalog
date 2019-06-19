@@ -87,7 +87,6 @@ aws ssm put-parameter \
 		}
 	}
 }" \
-    --overwrite \
     --profile $1 \
     --region $2
 
@@ -95,13 +94,11 @@ aws ssm put-parameter \
     --name "EC2KeyPairName" \
     --type "String" \
     --value "JingNV-Training" \
-    --overwrite
 
 aws ssm put-parameter \
     --name "VPCId" \
     --type "String" \
     --value "vpc-0e89f4904fcf2e20c" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -109,23 +106,20 @@ aws ssm put-parameter \
     --name "VPCCidrBlock" \
     --type "String" \
     --value "10.64.0.0/16" \
-    --overwrite
     --profile $1 \
     --region $2
 
 aws ssm put-parameter \
     --name "PrivateSubnetList" \
-    --type "AWS::SSM::Parameter::Value<List<String>>" \
+    --type "StringList" \
     --value "subnet-0d9071e7b96a2fe75,subnet-07f42585e44249b68,subnet-0645b2222530ced5e" \
-    --overwrite
     --profile $1 \
     --region $2
 
 aws ssm put-parameter \
     --name "PublicSubnetList" \
-    --type "AWS::SSM::Parameter::Value<List<String>>" \
+    --type "StringList" \
     --value "subnet-0a7729a9fdebf9437,subnet-0e4c697665d6367ff,subnet-04c98816f0a1b928f" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -133,7 +127,6 @@ aws ssm put-parameter \
     --name "ExternalHostedZoneName" \
     --type "String" \
     --value "1strategy-training.com" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -141,7 +134,6 @@ aws ssm put-parameter \
     --name "ExternalRecordSetName" \
     --type "String" \
     --value "1s-jingprod" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -149,7 +141,6 @@ aws ssm put-parameter \
     --name "PrivateDNSHostedZoneName" \
     --type "String" \
     --value "internal.1strategy-training.com." \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -157,7 +148,6 @@ aws ssm put-parameter \
     --name "CertificateArn" \
     --type "String" \
     --value "arn:aws:acm:us-east-1:281782457076:certificate/6dcae0f8-28df-493e-8d57-f63ceded2ca1" \
-    --overwrite
     --profile $1 \
     --region $2
 

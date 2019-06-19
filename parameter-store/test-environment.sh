@@ -87,7 +87,6 @@ aws ssm put-parameter \
 		}
 	}
 }" \
-    --overwrite \
     --profile $1 \
     --region $2
 
@@ -95,7 +94,6 @@ aws ssm put-parameter \
     --name "EC2KeyPairName" \
     --type "String" \
     --value "JingNVKeyPair" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -103,7 +101,6 @@ aws ssm put-parameter \
     --name "VPCId" \
     --type "String" \
     --value "vpc-05ad25cd042facb61" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -111,23 +108,20 @@ aws ssm put-parameter \
     --name "VPCCidrBlock" \
     --type "String" \
     --value "10.64.0.0/16" \
-    --overwrite
     --profile $1 \
     --region $2
 
 aws ssm put-parameter \
     --name "PrivateSubnetList" \
-    --type "AWS::SSM::Parameter::Value<List<String>>" \
+    --type "StringList" \
     --value "subnet-0c1df95c81e4f0b48,subnet-0a7ff68fb72c66823,subnet-00b6b2301230ca831" \
-    --overwrite
     --profile $1 \
     --region $2
 
 aws ssm put-parameter \
     --name "PublicSubnetList" \
-    --type "AWS::SSM::Parameter::Value<List<String>>" \
+    --type "StringList" \
     --value "subnet-0fba18d11f5066df4,subnet-05fda5d3c1d844f7d,subnet-012a43b6b39f9233d" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -135,7 +129,6 @@ aws ssm put-parameter \
     --name "ExternalHostedZoneName" \
     --type "String" \
     --value "1strategy-sandbox.com" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -143,7 +136,6 @@ aws ssm put-parameter \
     --name "ExternalRecordSetName" \
     --type "String" \
     --value "1s-jingtest" \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -151,7 +143,6 @@ aws ssm put-parameter \
     --name "PrivateDNSHostedZoneName" \
     --type "String" \
     --value "internal.1strategy-sandbox.com." \
-    --overwrite
     --profile $1 \
     --region $2
 
@@ -159,6 +150,5 @@ aws ssm put-parameter \
     --name "CertificateArn" \
     --type "String" \
     --value "arn:aws:acm:us-east-1:842337631775:certificate/4c676396-4c8f-41fd-b5a3-7b71cf35adff" \
-    --overwrite
     --profile $1 \
     --region $2
