@@ -6,6 +6,10 @@ products:
     template: review-portal-asg-step2.yaml
     owner: jing@1strategy.com
     description: Create an load balanced and auto scaled Review Portal web site with CloudWatch agent installed.
+  - name: product-review-portal-asg-updated-step2
+    template: product-review-portal-asg-updated-step2.yaml
+    owner: jing@1strategy.com
+    description: Use parameter store to manage the env specific parameters.
   - name: webportal-codedeploy-step3
     template: webportal-codedeploy-step3.yaml
     owner: jing@1strategy.com
