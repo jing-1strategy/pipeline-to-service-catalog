@@ -94,6 +94,8 @@ aws ssm put-parameter \
     --name "EC2KeyPairName" \
     --type "String" \
     --value "JingNV-Training" \
+	--profile $1 \
+    --region $2
 
 aws ssm put-parameter \
     --name "VPCId" \
@@ -126,7 +128,7 @@ aws ssm put-parameter \
 aws ssm put-parameter \
     --name "ExternalHostedZoneName" \
     --type "String" \
-    --value "1strategy-training.com" \
+    --value "1strategy-training.com." \
     --profile $1 \
     --region $2
 
@@ -151,3 +153,110 @@ aws ssm put-parameter \
     --profile $1 \
     --region $2
 
+aws ssm put-parameter \
+    --name "AmazonCloudWatch-Analysis-Server-CW-Config" \
+    --type "String" \
+    --value "{
+	"logs": {
+		"logs_collected": {
+			"files": {
+				"collect_list": [
+					{
+						"file_path": "/var/log/pipeline.log",
+						"log_group_name": "idbydna/analysis-server-pipeline-log",
+						"log_stream_name": "analysisserver-{instance_id}"
+					},
+					{
+						"file_path": "/var/log/core-analysis.log",
+						"log_group_name": "idbydna/analysis-server-core-analysis-log",
+						"log_stream_name": "analysisserver-{instance_id}"
+					}
+				]
+			}
+		}
+	},
+	"metrics": {
+		"append_dimensions": {
+			"AutoScalingGroupName": "${aws:AutoScalingGroupName}",
+			"ImageId": "${aws:ImageId}",
+			"InstanceId": "${aws:InstanceId}",
+			"InstanceType": "${aws:InstanceType}"
+		},
+		"metrics_collected": {
+			"cpu": {
+				"measurement": [
+					"cpu_usage_idle",
+					"cpu_usage_iowait",
+					"cpu_usage_user",
+					"cpu_usage_system"
+				],
+				"metrics_collection_interval": 30,
+				"resources": [
+					"*"
+				],
+				"totalcpu": false
+			},
+			"disk": {
+				"measurement": [
+					"used_percent",
+					"inodes_free"
+				],
+				"metrics_collection_interval": 30,
+				"resources": [
+					"*"
+				]
+			},
+			"diskio": {
+				"measurement": [
+					"io_time"
+				],
+				"metrics_collection_interval": 30,
+				"resources": [
+					"*"
+				]
+			},
+			"mem": {
+				"measurement": [
+					"mem_used_percent"
+				],
+				"metrics_collection_interval": 30
+			},
+			"swap": {
+				"measurement": [
+					"swap_used_percent"
+				],
+				"metrics_collection_interval": 30
+			}
+		}
+	}
+}" \
+    --profile $1 \
+    --region $2
+
+aws ssm put-parameter \
+    --name "PrivateSubnetId" \
+    --type "String" \
+    --value "subnet-0d9071e7b96a2fe75" \
+    --profile $1 \
+    --region $2
+
+aws ssm put-parameter \
+    --name "EFSVolumeId" \
+    --type "String" \
+    --value "fs-eb93d508" \
+    --profile $1 \
+    --region $2
+
+aws ssm put-parameter \
+    --name "EFSMountTargateSecurityGroupId" \
+    --type "String" \
+    --value "sg-096fea6d02fb4b967" \
+    --profile $1 \
+    --region $2
+
+aws ssm put-parameter \
+    --name "AnalysisServerCleanupSNSTopic" \
+    --type "String" \
+    --value "arn:aws:sns:us-east-1:281782457076:trigger-cleanup-lambda" \
+    --profile $1 \
+    --region $2

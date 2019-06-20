@@ -8,9 +8,8 @@ Parameters:
     Default: AmazonCloudWatch-Analysis-Server-CW-Config
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
-    Type: AWS::EC2::KeyPair::KeyName
-    Default: JingNVKeyPair
-    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::KeyPair::KeyName>"
+    Default: EC2KeyPairName
   InstanceType:
     Description: EC2 instance type
     Type: String
@@ -29,7 +28,7 @@ Parameters:
   AnalysisServerVolumeSize:
     Description: The size of the volume, in GiBs.
     Type: String
-    Default: 50
+    Default: 100
     ConstraintDescription: 1-16,384 for gp2, 4-16,384 for io1, 500-16,384 for st1, 500-16,384 for sc1, and 1-1,024 for standard.
   AnalysisServerRootVolumeSize:
     Description: The size of the root volume, in GiBs.
@@ -38,32 +37,30 @@ Parameters:
     ConstraintDescription: 1-16,384 for gp2, 4-16,384 for io1, 500-16,384 for st1, 500-16,384 for sc1, and 1-1,024 for standard.
   VPCId:
     Description: The id of an existing VPC that the EC2 instances will be launched into.
-    Type: String
-    Default: vpc-05ad25cd042facb61
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: VPCId
     ConstraintDescription: must be an existing VPC.
   PrivateSubnetId:
     Description: The id of an existing private subnet that the EC2 instances will be launched into.
-    Type: String
-    Default: subnet-0fba18d11f5066df4
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: PrivateSubnetId
     ConstraintDescription: must be an existing private subnet in the Virtual Private Cloud.
   EFSVolumeId:
     Description: The id of the EFS volume need to be attached
-    Type: String
-    Default: fs-dbd4bb38
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: EFSVolumeId
   MountPoint:
     Description: The Linux mount point for the EFS volume
     Type: String
     Default: /mnt/efs
-
   EFSMountTargateSecurityGroupId:
     Description: The security group id of the ECS mount target
-    Type: String
-    Default: sg-0821ec8e0e7b423dc
-
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: EFSMountTargateSecurityGroupId
   AnalysisServerCleanupSNSTopic:
     Description: The arn of the SNS topic to trigger the cleanup lambda function
-    Type: String
-    Default: arn:aws:sns:us-east-1:842337631775:trigger-cleanup-lambda
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: AnalysisServerCleanupSNSTopic
 
 Resources:
   AnalysisServerEC2Role:

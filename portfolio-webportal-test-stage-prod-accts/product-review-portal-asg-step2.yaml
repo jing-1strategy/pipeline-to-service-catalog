@@ -45,9 +45,8 @@ Parameters:
 
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
-    Type: "AWS::EC2::KeyPair::KeyName"
-    Default: JingNVKeyPair
-    ConstraintDescription: must be the name of an existing EC2 KeyPair.
+    Type: "AWS::SSM::Parameter::Value<AWS::EC2::KeyPair::KeyName>"
+    Default: EC2KeyPairName
 
   WebServerInstanceType:
     Description: EC2 instance type of the web server
@@ -120,26 +119,26 @@ Parameters:
 
   VPCId:
     Description: The id of an existing VPC that the EC2 instances will be launched into.
-    Type: "AWS::EC2::VPC::Id"
-    Default: vpc-05ad25cd042facb61
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: VPCId
     ConstraintDescription: must be an existing VPC.
 
   VPCCidrBlock:
     Description: The IPv4 CIDR block of the VPC that the EC2 instances will be launched into.
-    Type: String
-    Default: 10.64.0.0/16
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: VPCCidrBlock
     ConstraintDescription: must be an valid IPv4 CIDR block.
 
   PrivateSubnetList:
     Description: The list of existing private subnet IDs in the VPC that the Web Server instances will be launched into.
-    Type: "List<AWS::EC2::Subnet::Id>"
-    Default: subnet-0c1df95c81e4f0b48,subnet-0a7ff68fb72c66823,subnet-00b6b2301230ca831
+    Type: "AWS::SSM::Parameter::Value<List<String>>"
+    Default: PrivateSubnetList
     ConstraintDescription: must be a list of existing private subnets in the Virtual Private Cloud.
 
   PublicSubnetList:
     Description: The list of existing public subnet IDs in the VPC.
-    Type: "List<AWS::EC2::Subnet::Id>"
-    Default: subnet-0fba18d11f5066df4,subnet-05fda5d3c1d844f7d,subnet-012a43b6b39f9233d
+    Type: "AWS::SSM::Parameter::Value<List<String>>"
+    Default: PublicSubnetList
     ConstraintDescription: must specify public subnets from at least two Availability Zones.
 
   ASGMinSize:
@@ -168,32 +167,31 @@ Parameters:
 
   CertificateArn:
     Description: Specifies an SSL server certificate for use with your application load balancer.
-    Type: String
-    Default: arn:aws:acm:us-east-1:842337631775:certificate/4c676396-4c8f-41fd-b5a3-7b71cf35adff
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: CertificateArn
     ConstraintDescription: must be an existing certificate arn in ACM.
 
   ExternalHostedZoneName:
     Description: The name of the public domain for the hosted zone where you want to add the resource record set.
-    Type: String
-    Default: "1strategy-sandbox.com."
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: ExternalHostedZoneName
     ConstraintDescription: must be an existing public domain name in Route53.
 
   ExternalRecordSetName:
     Description: The name of the record set with will be added to external hosted zone.
-    Type: String
-    Default: jingtest
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: ExternalRecordSetName
     ConstraintDescription: must be an existing public domain name in Route53.
 
   PrivateDNSHostedZoneName:
     Description: The name of the private hosted zone.
-    Type: String
-    Default: internal.1strategy-sandbox.com.
+    Type: "AWS::SSM::Parameter::Value<String>"
+    Default: PrivateDNSHostedZoneName
     ConstraintDescription: must match the internal alb certificate.
 
   CMKArn:
     Description: ARN of the KMS CMK will be used to encrypt codepipeline artifacts bucket.
     Type: String
-    Default: arn:aws:kms:us-east-1:355189840595:key/a1eff05f-f8fc-419f-a9ec-641c779bb332
 
   PipelineArtifactsBucketName:
     Description: Name of the Pipeline Artifacts Bucket.
