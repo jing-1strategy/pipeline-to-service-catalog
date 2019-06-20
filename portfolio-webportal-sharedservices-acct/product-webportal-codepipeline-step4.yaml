@@ -21,7 +21,6 @@ Parameters:
   GitHubOAuthToken:
     Type: String
     NoEcho: true
-    Default: 530867e8343f906f07dd4e4d30025f4cb6d5bc50
   GitHubBranchName:
     Type: String
     Default: master
