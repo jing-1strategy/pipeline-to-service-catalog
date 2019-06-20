@@ -1,4 +1,4 @@
-name: portfolio-analysisserver-test-stage-prod-accts
+name: JING_Analysis_Server
 description: Analysis Server Clouformation templates need to deployed to the test, stage and prod env.
 owner: jing@1strategy.com
 products:
