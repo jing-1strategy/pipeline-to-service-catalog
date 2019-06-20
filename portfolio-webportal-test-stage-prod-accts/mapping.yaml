@@ -3,7 +3,7 @@ description: Webportal Clouformation templates need to deployed to the test, sta
 owner: jing@1strategy.com
 products:
   - name: review-portal-asg-step2
-    template: review-portal-asg-step2.yaml
+    template: product-review-portal-asg-step2.yaml
     owner: jing@1strategy.com
     description: Create an load balanced and auto scaled Review Portal web site with CloudWatch agent installed.
   - name: product-review-portal-asg-updated-step2
@@ -11,7 +11,7 @@ products:
     owner: jing@1strategy.com
     description: Use parameter store to manage the env specific parameters.
   - name: webportal-codedeploy-step3
-    template: webportal-codedeploy-step3.yaml
+    template: product-webportal-codedeploy-step3.yaml
     owner: jing@1strategy.com
     description: Create the CodeDeploy application, deployment group, and service role used by CodeDeploy.
 accounts:

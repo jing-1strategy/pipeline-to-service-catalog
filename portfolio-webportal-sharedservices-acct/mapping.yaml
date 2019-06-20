@@ -3,11 +3,11 @@ description: Webportal Clouformation templates need to deployed to the Shared Se
 owner: jing@1strategy.com
 products:
   - name: webportal-prerequisites-step1
-    template: webportal-prerequisites-step1.yaml
+    template: product-webportal-prerequisites-step1.yaml
     owner: jing@1strategy.com
     description: Creates a S3 bucket, KMS key, KMS alias that can be used by the WebPortal CodePipeline.
   - name: webportal-codepipeline-step4
-    template: webportal-codepipeline-step4.yaml
+    template: product-webportal-codepipeline-step4.yaml
     owner: jing@1strategy.com
     description: CodePipeline to deploy the latest Webportal code from Github to test, stage and prod environment.
 accounts:
