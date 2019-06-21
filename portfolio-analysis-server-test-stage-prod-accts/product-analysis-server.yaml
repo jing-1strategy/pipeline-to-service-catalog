@@ -104,6 +104,7 @@ Resources:
   AnalysisServerEC2Instance:
     Type: AWS::EC2::Instance
     DependsOn: AnalysisServerEC2InstanceProfile
+
     Properties:
       InstanceType: !Ref InstanceType
       IamInstanceProfile: !Ref AnalysisServerEC2InstanceProfile
@@ -134,10 +135,6 @@ Resources:
       Tags:
         - Key: Name
           Value: ID Analysis Server
-    CreationPolicy:
-      ResourceSignal:
-        Count: 1
-        Timeout: "PT15M"
 
   InstanceSecurityGroup:
     Type: AWS::EC2::SecurityGroup
