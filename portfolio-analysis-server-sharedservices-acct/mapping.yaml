@@ -1,5 +1,5 @@
-name: JING_WebPortal_Step1_Step4
-description: Analysis Server Clouformation templates need to deployed to the Shared Service Account.
+name: JING_Analysis_Server_Pipeline
+description: Analysis Server PipelineClouformation templates need to deployed to the Shared Service Account.
 owner: jing@1strategy.com
 products:
   - name: analysis-server-codepipeline
@@ -12,7 +12,7 @@ accounts:
 
 tags:
   - Key: Name
-    Value: WebPortal
+    Value: AnalysisServer
 principals:
   - role/1S-Admins
   - user/jingliang
