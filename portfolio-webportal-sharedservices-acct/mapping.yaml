@@ -19,3 +19,4 @@ tags:
     Value: WebPortal
 principals:
   - role/1S-Admins
+  - user/jingliang
