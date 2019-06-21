@@ -8,7 +8,7 @@ Metadata:
           default: "Github Settings:"
         Parameters:
           - GitHubOwner
-          - GitHubOAuthToken
+          - GithubPersonalToken
           - GitHubRepoName
           - GitHubBranchName
 ####################################################
@@ -18,7 +18,7 @@ Parameters:
   GitHubOwner:
     Type: String
     Default: jing-1strategy
-  GitHubOAuthToken:
+  GithubPersonalToken:
     Type: String
     NoEcho: true
   GitHubBranchName:
@@ -39,7 +39,7 @@ Resources:
     Properties:
       Authentication: GITHUB_HMAC
       AuthenticationConfiguration:
-        SecretToken: !Ref GitHubOAuthToken
+        SecretToken: !Ref GithubPersonalToken
       Filters:
         - JsonPath: "$.ref"
           MatchEquals: refs/heads/{Branch}
@@ -227,7 +227,7 @@ Resources:
                 Owner: !Ref GitHubOwner
                 Repo: !Ref GitHubRepoName
                 Branch: !Ref GitHubBranchName
-                OAuthToken: !Ref GitHubOAuthToken
+                OAuthToken: !Ref GithubPersonalToken
                 PollForSourceChanges: false
               RunOrder: 1
         - Name: Build
