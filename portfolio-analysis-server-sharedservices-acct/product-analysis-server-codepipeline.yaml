@@ -333,6 +333,7 @@ Resources:
   ####################################################
   AnalysisServerPipeline:
     Type: AWS::CodePipeline::Pipeline
+    DependsOn: CodePipelineS3Bucket
     Properties:
       ArtifactStore:
         Type: S3
