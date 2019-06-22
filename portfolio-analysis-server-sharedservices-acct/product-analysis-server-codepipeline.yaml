@@ -19,8 +19,7 @@ Parameters:
     Default: packer-codebuild-demo
   SharedServiceAccountId:
     Type: String
-    Default: "842337631775"
-    # Default: "355189840595"
+    Default: "355189840595"
   SharedServiceAccountCMKAdminRoleName:
     Type: String
     Default: 1S-Admins
@@ -29,10 +28,10 @@ Parameters:
     Default: 1s-analysis-server-codepipeline-us-east-1
   VPCId:
     Type: String
-    Default: vpc-05ad25cd042facb61
+    Default: vpc-0aae24b90e0d93956
   PrivateSubnetList:
     Type: List<AWS::EC2::Subnet::Id>
-    Default: subnet-0c1df95c81e4f0b48,subnet-0a7ff68fb72c66823,subnet-00b6b2301230ca831
+    Default: subnet-09b3edb90e1e847e4,subnet-0527c516155b9fefe,subnet-0316041a7d0bb41a4
 ####################################################
 # Resources
 ####################################################
