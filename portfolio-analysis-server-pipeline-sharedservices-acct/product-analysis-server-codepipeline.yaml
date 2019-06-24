@@ -498,3 +498,18 @@ Resources:
               Configuration:
                 FunctionName: !Ref ShareAMIFunction
               RunOrder: 1
+####################################################
+## Outputs
+####################################################
+Outputs:
+  AnalysisServerCMKKeyArn:
+    Description: The arn of the Analysis Server CodePipeline CMK.
+    Value: !GetAtt AnalysisServerCMKKey.Arn
+    Export:
+      Name: AnalysisServerCMKKeyArn
+
+  PackerEC2InstanceSecurityGroup:
+    Description: The security group which will be used by packer temp EC2 instances.
+    Value: !Ref PackerEC2InstanceSecurityGroup
+    Export:
+      Name: PackerEC2InstanceSecurityGroup
