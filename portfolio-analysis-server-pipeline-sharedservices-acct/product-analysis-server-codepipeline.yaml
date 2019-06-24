@@ -421,13 +421,13 @@ Resources:
                     LaunchPermission={
                         'Add': [
                             {
-                                'UserId': ${TestAccountId}
+                                'UserId': '${TestAccountId}'
                             },
                             {
-                                'UserId': ${StageAccountId}
+                                'UserId': '${StageAccountId}'
                             },
                             {
-                                'UserId': ${ProdAccountId}
+                                'UserId': '${ProdAccountId}'
                             }
                         ],
                 
