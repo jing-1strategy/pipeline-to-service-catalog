@@ -20,6 +20,15 @@ Parameters:
   SharedServiceAccountId:
     Type: String
     Default: "355189840595"
+  TestAccountId:
+    Type: String
+    Default: "842337631775"
+  StageAccountId:
+    Type: String
+    Default: "281782457076"
+  ProdAccountId:
+    Type: String
+    Default: "009576122059"
   SharedServiceAccountCMKAdminRoleName:
     Type: String
     Default: 1S-Admins
@@ -284,8 +293,50 @@ Resources:
               - codebuild:StartBuild
             Resource:
               - "*"
+          - Effect: Allow
+            Action:
+              - lambda:InvokeFunction
+            Resource:
+              - "*"
       Roles:
         - !Ref PipelineRole
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${GitHubRepoName}-Lambda-ShareAMI
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Path: /
+  LambdaExecutionPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: !Sub ${GitHubRepoName}-lambda-execution-policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - ec2:DescribeImages
+              - ec2:ModifyImageAttribute
+            Resource:
+              - "*"
+          - Effect: Allow
+            Action:
+              - codepipeline:PutJobSuccessResult
+              - codepipeline:PutJobFailureResult
+            Resource:
+              - "*"
+      Roles:
+        - !Ref LambdaExecutionRole
   ####################################################
   ## Resources - Security Group
   ####################################################
@@ -328,6 +379,65 @@ Resources:
           - !Ref CodeBuildSecurityGroup
         Subnets: !Ref PrivateSubnetList
         VpcId: !Ref VPCId
+  #####################################################################
+  ## Resources - Lambda Function - Share AMI with Application Accounts
+  #####################################################################
+  ShareAMIFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Runtime: python3.7
+      FunctionName: share-ami
+      Code:
+        ZipFile: !Sub |
+          import json
+          import boto3
+          from operator import itemgetter
+
+          def lambda_handler(event, context):
+              print(event)
+              try:
+                  job_id = event['CodePipeline.job']['id']
+                  ec2_client = boto3.client('ec2')
+                  ec2_resource = boto3.resource('ec2')
+                  code_pipeline_client = boto3.client('codepipeline')
+                  
+                  latest_ami_id = sorted(ec2_client.describe_images(
+                      Filters=[
+                          {
+                              'Name': 'tag:Name',
+                              'Values': [
+                                      'AnalysisServer-*',
+                              ]
+                          }
+                      ],
+                  )['Images'], key=itemgetter('CreationDate'))[-1]['ImageId']
+                  
+                  latest_image = ec2_resource.Image(latest_ami_id)
+                  latest_image.modify_attribute(
+                      LaunchPermission={
+                          'Add': [
+                              {
+                                  'UserId': ${TestAccountId}
+                              },
+                              {
+                                  'UserId': ${StageAccountId}
+                              },
+                              {
+                                  'UserId': ${ProdAccountId}
+                              }
+                          ],
+                  
+                      }
+                  )
+                  code_pipeline_client.put_job_success_result(jobId=job_id)
+
+              except Exception as e:
+                  print('Function failed due to exception.')
+                  print(e)
+                  code_pipeline_client.put_job_failure_result(jobId=job_id, failureDetails={
+                                                  'message': 'Function exception: ' + str(e), 'type': 'JobFailed'})
   ####################################################
   ## Resources - CodePipeline
   ####################################################
@@ -376,3 +486,14 @@ Resources:
                 - Name: SourceOutput
               OutputArtifacts:
                 - Name: BuildOutput
+        - Name: Invoke
+          Actions:
+            - Name: call-shareami-function
+              ActionTypeId:
+                Category: Invoke
+                Owner: AWS
+                Version: 1
+                Provider: Lambda
+              Configuration:
+                FunctionName: !Ref ShareAMIFunction
+              RunOrder: 1

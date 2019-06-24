@@ -1,4 +1,4 @@
-# Create CodePipeline for WebPortal
+# Manage Cloudformation Templates and Pipelines
 
 ## Step 0: Set Up Prerequisites
 
@@ -17,6 +17,8 @@ You need personal access tokens to access your GitHub repositories and retrieve 
 * Choose Generate token.
 
 * Next to the generated token, choose the copy icon. (Make sure you copy your generated token at this time. You cannot view the token after you close this page.)
+
+## Set up CodePipeline for WebPortal
 
 ## Step 1: Deploy prerequisites-step1.yaml in the shared-services account
 This template will create below resource and will be used by other templates:
