@@ -170,10 +170,27 @@ And the code change should show up in the webportal URL in each account.
 
 The purpose of the analysis server codepipeline is to create an AMI with the latest analysis server code installed.
 
-The cloudformation template to launch this pipeline is portfolio-analysis-server-pipeline-sharedservices-acct/product-analysis-server-codepipeline.yaml. At this point, you should already deployed this template to the service catalog in the shared-services account. 
+The cloudformation template to launch this pipeline is portfolio-analysis-server-pipeline-sharedservices-acct/product-analysis-server-codepipeline.yaml. At this point, you should already deployed this template to the service catalog in the shared-services account.
 
 1. In the shared service account, go to service catalog console > Products list
 
 2. Click product [analysis-server-codepipeline], click [LAUNCH PRODUCT]
 
-3. 
+3. Choose the latest version and provide a name for the stack then click [NEXT]
+
+4. Check and update the default parameters, provide the [GithubPersonalToken
+], then click [Next]
+
+5. Use default values of other settings then click [LAUNCH]
+
+After the cloudformation created completed, the analysis server pipeline should be created, and the pipeline will **Fail** at the Build stage. The reason of the fail is that packer is not using the newly generated CMK and security group.
+
+6. Go to the cloudformation console, check [Outputs] tab, get the AnalysisServerCMKKeyArn and PackerEC2InstanceSecurityGroup, then update the "CreateAMI.json" in the analysis server source code repo, then push the change to the github repo. 
+
+7. The analysis server code pipeline will be triggered:
+
+<img src="./images/analysis-server-pipeline.png" width="800">
+
+After pipeline executing completed, go to EC2 > AMI, a new AMI is generated and shared with test, stage and prod accounts:
+
+<img src="./images/AMI.png" width="800">

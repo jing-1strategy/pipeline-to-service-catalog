@@ -61,6 +61,10 @@ Parameters:
     Description: The arn of the SNS topic to trigger the cleanup lambda function
     Type: "AWS::SSM::Parameter::Value<String>"
     Default: AnalysisServerCleanupSNSTopic
+  RunDir:
+    Description: The s3 object location which will be passed to the ec2 instance.
+    Type: String
+    Default: ""
 
 Resources:
   AnalysisServerEC2Role:
@@ -131,6 +135,7 @@ Resources:
           - mount -a -t efs defaults
           - rpm -Uvh https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
           - /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c ssm:${SSMKey} -s
+          - echo "${RunDir}" > /etc/temp.txt
 
       Tags:
         - Key: Name
