@@ -124,8 +124,6 @@ Resources:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: !Ref AnalysisServerRootVolumeSize
-            Encrypted: true
-            KmsKeyId: !ImportValue AnalysisServerEBSCMKArn
       UserData:
         Fn::Base64: !Sub |
           #cloud-config
