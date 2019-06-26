@@ -124,6 +124,8 @@ Resources:
         - DeviceName: /dev/xvda
           Ebs:
             VolumeSize: !Ref AnalysisServerRootVolumeSize
+            Encrypted: true
+            KmsKeyId: !ImportValue AnalysisServerEBSCMKArn
       UserData:
         Fn::Base64: !Sub |
           #cloud-config
@@ -163,6 +165,7 @@ Resources:
       VolumeType: !Ref "AnalysisServerVolumeType"
       AvailabilityZone: !GetAtt "AnalysisServerEC2Instance.AvailabilityZone"
       Encrypted: true
+      KmsKeyId: !ImportValue AnalysisServerEBSCMKArn
 
   AnalysisServerVolumeAttachment:
     Type: AWS::EC2::VolumeAttachment
