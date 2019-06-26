@@ -87,7 +87,7 @@ Resources:
   AllowPublishToSNS:
     Type: AWS::IAM::Policy
     Properties:
-      PolicyName: AllowPublishToSNS
+      PolicyName: AnalysisServerEC2Policy
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -95,6 +95,10 @@ Resources:
             Action:
               - sns:Publish
             Resource: !Ref AnalysisServerCleanupSNSTopic
+          - Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: "*"
       Roles:
         - !Ref AnalysisServerEC2Role
 
