@@ -2,6 +2,10 @@ name: JING_Analysis_Server
 description: Analysis Server Clouformation templates need to deployed to the test, stage and prod env.
 owner: jing@1strategy.com
 products:
+  - name: product-analysis-server-ebs-encrypt-key
+    template: product-analysis-server-ebs-encrypt-key.yaml
+    owner: jing@1strategy.com
+    description: Template to create CMK for analysis server ebs encryption.
   - name: product-analysis-server
     template: product-analysis-server.yaml
     owner: jing@1strategy.com
