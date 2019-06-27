@@ -25,16 +25,16 @@ Parameters:
     Default: gp2
     AllowedValues: [gp2, io1]
     ConstraintDescription: This can be gp2 for General Purpose SSD, io1 for Provisioned IOPS SSD, st1 for Throughput Optimized HDD, sc1 for Cold HDD, or standard for Magnetic volumes.
-  # AnalysisServerSecondVolumeSize:
-  #   Description: The size of the volume, in GiBs.
-  #   Type: String
-  #   Default: 100
-  #   ConstraintDescription: 1-16,384 for gp2, 4-16,384 for io1, 500-16,384 for st1, 500-16,384 for sc1, and 1-1,024 for standard.
-  # AnalysisServerRootVolumeSize:
-  #   Description: The size of the root volume, in GiBs.
-  #   Type: String
-  #   Default: 100
-  #   ConstraintDescription: 1-16,384 for gp2, 4-16,384 for io1, 500-16,384 for st1, 500-16,384 for sc1, and 1-1,024 for standard.
+  AnalysisServerSecondVolumeSize:
+    Description: The size of the volume, in GiBs.
+    Type: String
+    Default: 100
+    ConstraintDescription: 1-16,384 for gp2, 4-16,384 for io1, 500-16,384 for st1, 500-16,384 for sc1, and 1-1,024 for standard.
+  AnalysisServerRootVolumeSize:
+    Description: The size of the root volume, in GiBs.
+    Type: String
+    Default: 100
+    ConstraintDescription: 1-16,384 for gp2, 4-16,384 for io1, 500-16,384 for st1, 500-16,384 for sc1, and 1-1,024 for standard.
   VPCId:
     Description: The id of an existing VPC that the EC2 instances will be launched into.
     Type: "AWS::SSM::Parameter::Value<String>"
@@ -119,13 +119,15 @@ Resources:
       ImageId: !Ref InstanceAMI
       SecurityGroupIds: [!Ref InstanceSecurityGroup]
       SubnetId: !Ref PrivateSubnetId
-      # BlockDeviceMappings:
-      #   - DeviceName: /dev/xvda
-      #     Ebs:
-      #       VolumeSize: !Ref AnalysisServerRootVolumeSize
-      #       VolumeType: !Ref AnalysisServerVolumeType
-      #       Encrypted: true
-      #       KmsKeyId: !ImportValue AnalysisServerEBSCMKArn
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: !Ref AnalysisServerRootVolumeSize
+            VolumeType: !Ref AnalysisServerVolumeType
+        - DeviceName: /dev/sdf
+          Ebs:
+            VolumeSize: !Ref AnalysisServerSecondVolumeSize
+            VolumeType: !Ref AnalysisServerVolumeType
       UserData:
         Fn::Base64: !Sub |
           #cloud-config
