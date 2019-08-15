@@ -89,21 +89,18 @@ Resources:
     Properties:
       ApplicationName: !Sub ${GitHubRepoName}-CodeDeploy-Application
       ComputePlatform: Server
-
-  CodeDeployDeploymentGroup:
-    Type: AWS::CodeDeploy::DeploymentGroup
-    Properties:
-      ApplicationName: !Ref CodeDeployApplication
-      DeploymentConfigName: CodeDeployDefault.AllAtOnce
-      DeploymentGroupName: !Sub ${GitHubRepoName}-DeploymentGroup
-      # AutoScalingGroups:
-      #   - !ImportValue WebPortal-ASGName
-      DeploymentStyle:
-        DeploymentType: BLUE_GREEN
-        DeploymentOption: WITH_TRAFFIC_CONTROL
-      LoadBalancerInfo:
-        ElbInfoList:
-          - Name: !ImportValue WebPortal-ExternalALB-Name
-        TargetGroupInfoList:
-          - Name: !ImportValue WebPortal-ExternalTargetGroup-Name
-      ServiceRoleArn: !GetAtt CrossAccountCodeDeployServiceRole.Arn
+  # CodeDeployDeploymentGroup:
+  #   Type: AWS::CodeDeploy::DeploymentGroup
+  #   Properties:
+  #     ApplicationName: !Ref CodeDeployApplication
+  #     DeploymentConfigName: CodeDeployDefault.AllAtOnce
+  #     DeploymentGroupName: !Sub ${GitHubRepoName}-DeploymentGroup
+  #     AutoScalingGroups:
+  #       - !ImportValue WebPortal-ASGName
+  #     DeploymentStyle:
+  #       DeploymentType: BLUE_GREEN
+  #       DeploymentOption: WITHOUT_TRAFFIC_CONTROL
+  #     # LoadBalancerInfo:
+  #     #   TargetGroupInfoList:
+  #     #     - Name: !ImportValue WebPortal-ExternalTargetGroup-Name
+  #     ServiceRoleArn: !GetAtt CrossAccountCodeDeployServiceRole.Arn
